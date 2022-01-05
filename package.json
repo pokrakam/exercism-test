@@ -1,0 +1,26 @@
+{
+  "name": "exercism-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "downport": "rm -rf downport && cp -r src downport && abaplint --fix abaplint-downport.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larshp/exercism-test.git"
+  },
+  "dependencies": {
+    "@abaplint/transpiler-cli": "^1.7.4",
+    "@abaplint/transpiler": "^1.7.4",
+    "@abaplint/cli": "^2.83.19",
+    "@abaplint/runtime": "^1.7.4"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/larshp/exercism-test/issues"
+  },
+  "homepage": "https://github.com/larshp/exercism-test#readme"
+}
