@@ -5,17 +5,20 @@
   "description": "test",
   "main": "index.js",
   "scripts": {
-    "downport": "rm -rf downport && cp -r src downport && abaplint --fix abaplint-downport.json"
+    "downport": "rm -rf downport && cp -r src downport && abaplint --fix abaplint-downport.json",
+    "unit": "node output/index.mjs",
+    "transpile": "rm -rf output && abap_transpile abap_transpile.json",
+    "test": "npm run downport && npm run transpile && npm run unit"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/larshp/exercism-test.git"
   },
   "dependencies": {
-    "@abaplint/transpiler-cli": "^1.7.4",
-    "@abaplint/transpiler": "^1.7.4",
+    "@abaplint/transpiler-cli": "^1.7.6",
+    "@abaplint/transpiler": "^1.7.6",
     "@abaplint/cli": "^2.83.21",
-    "@abaplint/runtime": "^1.7.4"
+    "@abaplint/runtime": "^1.7.6"
   },
   "author": "",
   "license": "ISC",
