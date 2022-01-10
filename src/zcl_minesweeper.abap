@@ -29,6 +29,9 @@ class zcl_minesweeper implementation.
     board = input.
     width = strlen( board[ 1 ] ).
 
+    "Note the differene in coordinate origins:
+    "y is a table and starts at 1, and x is a string offset and starts at 0. ABAP is fun.
+
     do height times.
 
       data(y) = sy-index.
@@ -38,7 +41,8 @@ class zcl_minesweeper implementation.
 
         data(x) = sy-index - 1.
         if row+x(1) = space.
-          row+x(1) = count_adj_mines( x = x y = y ).
+          row+x(1) = count_adj_mines( x = x
+                                      y = y ).
         endif.
 
       enddo.
