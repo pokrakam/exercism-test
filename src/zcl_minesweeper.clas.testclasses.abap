@@ -1,192 +1,192 @@
-class ltc_test definition final for testing
-  duration short
-  risk level harmless.
+CLASS ltc_test DEFINITION FINAL FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS.
 
-  private section.
+  PRIVATE SECTION.
 
-    data cut type ref to zcl_minesweeper.
+    DATA cut TYPE REF TO zcl_minesweeper.
 
-    methods setup.
-    methods assert_that importing input  type string_table
-                                  output type string_table.
+    METHODS setup.
+    METHODS assert_that IMPORTING input  TYPE string_table
+                                  output TYPE string_table.
 
-    methods no_rows                       for testing raising cx_static_check.
-    methods no_columns                    for testing raising cx_static_check.
-    methods no_mines                      for testing raising cx_static_check.
-    methods only_mines                    for testing raising cx_static_check.
-    methods mine_surrounded_by_spaces     for testing raising cx_static_check.
-    methods space_surrounded_by_mines     for testing raising cx_static_check.
-    methods horizontal_line               for testing raising cx_static_check.
-    methods horizontal_line_mines_at_ends for testing raising cx_static_check.
-    methods vertical_line                 for testing raising cx_static_check.
-    methods vertical_line_mines_at_ends   for testing raising cx_static_check.
-    methods cross                         for testing raising cx_static_check.
-    methods large_minefield               for testing raising cx_static_check.
+    METHODS no_rows                       FOR TESTING RAISING cx_static_check.
+    METHODS no_columns                    FOR TESTING RAISING cx_static_check.
+    METHODS no_mines                      FOR TESTING RAISING cx_static_check.
+    METHODS only_mines                    FOR TESTING RAISING cx_static_check.
+    METHODS mine_surrounded_by_spaces     FOR TESTING RAISING cx_static_check.
+    METHODS space_surrounded_by_mines     FOR TESTING RAISING cx_static_check.
+    METHODS horizontal_line               FOR TESTING RAISING cx_static_check.
+    METHODS horizontal_line_mines_at_ends FOR TESTING RAISING cx_static_check.
+    METHODS vertical_line                 FOR TESTING RAISING cx_static_check.
+    METHODS vertical_line_mines_at_ends   FOR TESTING RAISING cx_static_check.
+    METHODS cross                         FOR TESTING RAISING cx_static_check.
+    METHODS large_minefield               FOR TESTING RAISING cx_static_check.
 
-endclass.
-
-
-class ltc_test implementation.
-
-  method setup.
-    cut = new #( ).
-  endmethod.
+ENDCLASS.
 
 
-  method no_rows.
+CLASS ltc_test IMPLEMENTATION.
+
+  METHOD setup.
+    cut = NEW #( ).
+  ENDMETHOD.
+
+
+  METHOD no_rows.
     assert_that(
-      input  = value #( )
-      output = value #( ) ).
-  endmethod.
+      input  = VALUE #( )
+      output = VALUE #( ) ).
+  ENDMETHOD.
 
 
-  method no_columns.
+  METHOD no_columns.
     assert_that(
-      input  = value #( ( ) )
-      output = value #( ( ) ) ).
-  endmethod.
+      input  = VALUE string_table( ( ) )
+      output = VALUE string_table( ( ) ) ).
+  ENDMETHOD.
 
 
-  method no_mines.
+  METHOD no_mines.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `   ` )
         ( `   ` )
         ( `   ` ) )
-      output = value #(
+      output = VALUE #(
         ( `   ` )
         ( `   ` )
         ( `   ` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method only_mines.
+  METHOD only_mines.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `***` )
         ( `***` )
         ( `***` ) )
-      output = value #(
+      output = VALUE #(
         ( `***` )
         ( `***` )
         ( `***` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method mine_surrounded_by_spaces.
+  METHOD mine_surrounded_by_spaces.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `   ` )
         ( ` * ` )
         ( `   ` ) )
-      output = value #(
+      output = VALUE #(
         ( `111` )
         ( `1*1` )
         ( `111` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method space_surrounded_by_mines.
+  METHOD space_surrounded_by_mines.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `***` )
         ( `* *` )
         ( `***` ) )
-      output = value #(
+      output = VALUE #(
         ( `***` )
         ( `*8*` )
         ( `***` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method horizontal_line.
+  METHOD horizontal_line.
     assert_that(
-      input  = value #( ( ` * * ` ) )
-      output = value #( ( `1*2*1` ) ) ).
-  endmethod.
+      input  = VALUE #( ( ` * * ` ) )
+      output = VALUE #( ( `1*2*1` ) ) ).
+  ENDMETHOD.
 
 
-  method horizontal_line_mines_at_ends.
+  METHOD horizontal_line_mines_at_ends.
     assert_that(
-      input  = value #( ( `*   *` ) )
-      output = value #( ( `*1 1*` ) ) ).
-  endmethod.
+      input  = VALUE #( ( `*   *` ) )
+      output = VALUE #( ( `*1 1*` ) ) ).
+  ENDMETHOD.
 
 
-  method vertical_line.
+  METHOD vertical_line.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( ` ` )
         ( `*` )
         ( ` ` )
         ( `*` )
         ( ` ` ) )
-      output = value #(
+      output = VALUE #(
         ( `1` )
         ( `*` )
         ( `2` )
         ( `*` )
         ( `1` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method vertical_line_mines_at_ends.
+  METHOD vertical_line_mines_at_ends.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `*` )
         ( ` ` )
         ( ` ` )
         ( ` ` )
         ( `*` ) )
-      output = value #(
+      output = VALUE #(
         ( `*` )
         ( `1` )
         ( ` ` )
         ( `1` )
         ( `*` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method cross.
+  METHOD cross.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( `  *  ` )
         ( `  *  ` )
         ( `*****` )
         ( `  *  ` )
         ( `  *  ` ) )
-      output = value #(
+      output = VALUE #(
         ( ` 2*2 ` )
         ( `25*52` )
         ( `*****` )
         ( `25*52` )
         ( ` 2*2 ` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method large_minefield.
+  METHOD large_minefield.
     assert_that(
-      input  = value #(
+      input  = VALUE #(
         ( ` *  * ` )
         ( `  *   ` )
         ( `    * ` )
         ( `   * *` )
         ( ` *  * ` )
         ( `      ` ) )
-      output = value #(
+      output = VALUE #(
         ( `1*22*1` )
         ( `12*322` )
         ( ` 123*2` )
         ( `112*4*` )
         ( `1*22*2` )
         ( `111111` ) ) ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method assert_that.
-    data(act) = cut->sweep( input ).
+  METHOD assert_that.
+    DATA(act) = cut->sweep( input ).
     cl_abap_unit_assert=>assert_equals( act = act
                                         exp = output ).
-  endmethod.
+  ENDMETHOD.
 
-endclass.
+ENDCLASS.

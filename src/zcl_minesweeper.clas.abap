@@ -1,31 +1,31 @@
-CLASS zcl_minesweeper DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+class zcl_minesweeper definition
+  public
+  final
+  create public .
 
-  PUBLIC SECTION.
-    METHODS sweep IMPORTING input         TYPE string_table
-                  RETURNING VALUE(result) TYPE string_table.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
-    TYPES syinput(1) TYPE c.
-    DATA board         TYPE string_table.
-    DATA: height TYPE i,
-          width  TYPE i.
-    METHODS count_adj_mines IMPORTING x             TYPE i
-                                      y             TYPE i
-                            RETURNING VALUE(result) TYPE syinput.
-ENDCLASS.
+  public section.
+    methods sweep importing input         type string_table
+                  returning value(result) type string_table.
+  protected section.
+  private section.
+    types syinput(1) type c.
+    data board         type string_table.
+    data: height type i,
+          width  type i.
+    methods count_adj_mines importing x             type i
+                                      y             type i
+                            returning value(result) type syinput.
+endclass.
 
 
 
-CLASS zcl_minesweeper IMPLEMENTATION.
+class zcl_minesweeper implementation.
 
-  METHOD sweep.
-    DATA row TYPE c LENGTH 255. "To allow substring access with write
+  method sweep.
+    data row type c length 255. "To allow substring access with write
 
     height = lines( input ).
-    CHECK height > 0.
+    check height > 0.
 
     board = input.
     width = strlen( board[ 1 ] ).
@@ -33,48 +33,82 @@ CLASS zcl_minesweeper IMPLEMENTATION.
     "Note the differene in coordinate origins:
     "y is a table and starts at 1, and x is a string offset and starts at 0. ABAP is fun.
 
-    DO height TIMES.
+    do height times.
 
-      DATA(y) = sy-index.
-      row = board[ sy-index ].
+      data(y) = sy-index.
+      row = board[ y ].
 
-      DO width TIMES.
+      do width times.
 
-        DATA(x) = sy-index - 1.
-        IF row+x(1) = space.
+        data(x) = sy-index - 1.
+        if row+x(1) = space.
           row+x(1) = count_adj_mines( x = x
                                       y = y ).
-        ENDIF.
+        endif.
 
-      ENDDO.
+      enddo.
 
-      APPEND |{ row WIDTH = width }| TO result.
-    ENDDO.
+      append |{ row width = width }| to result.
+    enddo.
 
-  ENDMETHOD.
+  endmethod.
 
 
-  METHOD count_adj_mines.
+  method count_adj_mines.
 
-    DATA(off) = nmax( val1 = 0
+    data row type string.
+    data sum type i.
+
+    data(off) = nmax( val1 = 0
                       val2 = x - 1 ).
 
-    DATA(len) = nmin( val1 = 3
+    data(len) = nmin( val1 = 3
                       val2 = width - off
                       val3 = x + 2 ).
 
-    result = REDUCE i(
-        INIT s = 0
-        FOR i = nmax( val1 = 1 val2 = y - 1 ) UNTIL
-            i > nmin( val1 = y + 1 val2 = height )
-        LET row = board[ i ] IN
-        NEXT s = s + count( val = row+off(len)
-                            sub = `*` ) ).
+    data(check_row) = nmax( val1 = 1
+                            val2 = y - 1 ).
 
-    IF result = '0'.
+    data(last_row) = nmin( val1 = y + 1
+                           val2 = height ).
+
+    while check_row <= last_row.
+      row = board[ check_row ].
+      sum = sum + count( val = row+off(len)
+                         sub = `*` ).
+      check_row = check_row + 1.
+    endwhile.
+
+    "Downport not happy: 
+    
+    if sum > 0.
+      result = sum.
+    else.
       result = space.
-    ENDIF.
+    endif.
 
-  ENDMETHOD.
+*Alternate solution using REDUCE (Version 7.4 onwards)
+*
+*    data(off) = nmax( val1 = 0
+*                      val2 = x - 1 ).
+*
+*    data(len) = nmin( val1 = 3
+*                      val2 = width - off
+*                      val3 = x + 2 ).
+*
+*    result = reduce i(
+*        init s = 0
+*        for i = nmax( val1 = 1
+*                      val2 = y - 1 )
+*          until
+*            i > nmin( val1 = y + 1
+*                      val2 = height )
+*        let row = board[ i ] in
+*        next s = s + count( val = row+off(len)
+*                            sub = `*` ) ).
+*
+*    result = cond #( when sum = 0 then space else sum ).
 
-ENDCLASS.
+  endmethod.
+
+endclass.
