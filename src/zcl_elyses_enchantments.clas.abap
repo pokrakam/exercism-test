@@ -1,116 +1,104 @@
-class zcl_elyses_enchantments definition
-  public
-  final
-  create public .
+CLASS zcl_elyses_enchantments DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-  public section.
+  PUBLIC SECTION.
 
-    types ty_stack type standard table of i with empty key.
+    TYPES ty_stack TYPE STANDARD TABLE OF i WITH EMPTY KEY.
 
-    methods:
+    METHODS:
 
       get_item
-        importing stack         type ty_stack
-                  position      type i
-        returning value(result) type i,
+        IMPORTING stack         TYPE ty_stack
+                  position      TYPE i
+        RETURNING VALUE(result) TYPE i,
 
       set_item
-        importing stack         type ty_stack
-                  position      type i
-                  replacement   type i
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+                  position      TYPE i
+                  replacement   TYPE i
+        RETURNING VALUE(result) TYPE ty_stack,
 
       insert_item_at_top
-        importing stack         type ty_stack
-                  new_card      type i
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+                  new_card      TYPE i
+        RETURNING VALUE(result) TYPE ty_stack,
 
       remove_item
-        importing stack         type ty_stack
-                  position      type i
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+                  position      TYPE i
+        RETURNING VALUE(result) TYPE ty_stack,
 
       remove_item_from_top
-        importing stack         type ty_stack
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+        RETURNING VALUE(result) TYPE ty_stack,
 
       insert_item_at_bottom
-        importing stack         type ty_stack
-                  new_card      type i
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+                  new_card      TYPE i
+        RETURNING VALUE(result) TYPE ty_stack,
 
       remove_item_from_bottom
-        importing stack         type ty_stack
-        returning value(result) type ty_stack,
+        IMPORTING stack         TYPE ty_stack
+        RETURNING VALUE(result) TYPE ty_stack,
 
       get_size_of_stack
-        importing stack         type ty_stack
-        returning value(result) type i.
+        IMPORTING stack         TYPE ty_stack
+        RETURNING VALUE(result) TYPE i.
 
-  protected section.
-  private section.
-endclass.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
 
 
 
-class zcl_elyses_enchantments implementation.
+CLASS zcl_elyses_enchantments IMPLEMENTATION.
 
-  method get_item.
+  METHOD get_item.
     result = stack[ position ].
-  endmethod.
+  ENDMETHOD.
 
-  method set_item.
+  METHOD set_item.
 
-    " abaplint issue #2452, can't do:
-    " result = stack.
-    " result[ position ] = replacement.
-
-    " This doesn't work either:
     result = stack.
-    read table result index position assigning field-symbol(<card>).
-    <card> = replacement.
 
+    " abaplint issue #2452, can't do: result[ position ] = replacement.
 
-    " " Gotta go the old-old-fashioned way:
+    READ TABLE result INDEX position ASSIGNING FIELD-SYMBOL(<card>).
+    IF <card> IS ASSIGNED.
+      <card> = replacement.
+    ENDIF.
 
-    " clear result.
-    " loop at stack into data(card).
-    "   if sy-tabix = position.
-    "     append replacement to result.
-    "   else.
-    "     append card to result.
-    "   endif.
-    " endloop.
+  ENDMETHOD.
 
-  endmethod.
-
-  method insert_item_at_top.
+  METHOD insert_item_at_top.
     result = stack.
-    append new_card to result.
-  endmethod.
+    APPEND new_card TO result.
+  ENDMETHOD.
 
-  method get_size_of_stack.
+  METHOD get_size_of_stack.
     result = lines( stack ).
-  endmethod.
+  ENDMETHOD.
 
-  method insert_item_at_bottom.
+  METHOD insert_item_at_bottom.
     result = stack.
-    insert new_card into result index 1.
-  endmethod.
+    INSERT new_card INTO result INDEX 1.
+  ENDMETHOD.
 
-  method remove_item.
+  METHOD remove_item.
     result = stack.
-    delete result index position.
-  endmethod.
+    DELETE result INDEX position.
+  ENDMETHOD.
 
-  method remove_item_from_bottom.
+  METHOD remove_item_from_bottom.
     result = stack.
-    delete result index 1.
-  endmethod.
+    DELETE result INDEX 1.
+  ENDMETHOD.
 
-  method remove_item_from_top.
+  METHOD remove_item_from_top.
     result = stack.
-    delete result index lines( stack ).
-  endmethod.
+    DELETE result INDEX lines( stack ).
+  ENDMETHOD.
 
-endclass.
+ENDCLASS.
