@@ -1,47 +1,67 @@
-CLASS zcl_kindergarten_garden DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+class ZCL_KINDERGARTEN_GARDEN definition
+  public
+  final
+  create public.
 
-  PUBLIC SECTION.
-    METHODS plants
-      IMPORTING
-        diagram        TYPE string
-        student        TYPE string
-      RETURNING
-        VALUE(results) TYPE string_table.
+  public section.
+    methods CONSTRUCTOR.
+    methods PLANTS
+      importing
+        DIAGRAM        type STRING
+        STUDENT        type STRING
+      returning
+        value(RESULTS) type STRING_TABLE.
 
-  PROTECTED SECTION.
-  PRIVATE SECTION.
-    DATA students TYPE string_table.
+  private section.
+    data STUDENTS type STRING_TABLE.
+    methods GET_PLANT
+      importing
+        GARDEN_ROW    type STRING
+        PLANT_NUMBER  type I
+      returning
+        value(RESULT) type STRING.
 
-ENDCLASS.
-
-
-CLASS zcl_kindergarten_garden IMPLEMENTATION.
-
-
-  METHOD plants.
-
-    SPLIT condense( replace(
-                        val  = diagram
-                        sub  = `\n`
-                        with = ` `
-                        occ  = 0 ) ) AT ` ` INTO TABLE DATA(garden_rows).
-
-    DATA(student_id) = line_index( students[ table_line = to_lower( student ) ] ) - 1.
-
-    results = VALUE #(
-                FOR row IN garden_rows
-                FOR seed = 0 WHILE seed <= 1
-                LET offset = ( student_id * 2 ) + seed IN
-                ( SWITCH #( row+offset(1)
-                    WHEN 'G' THEN 'grass'
-                    WHEN 'C' THEN 'clover'
-                    WHEN 'R' THEN 'radishes'
-                    WHEN 'V' THEN 'violets' ) ) ).
-
-  ENDMETHOD.
+endclass.
 
 
-ENDCLASS.
+class ZCL_KINDERGARTEN_GARDEN implementation.
+  method CONSTRUCTOR.
+    STUDENTS = value #( ( |alice| )
+                        ( |bob| )
+                        ( |charlie| )
+                        ( |david| )
+                        ( |eve| )
+                        ( |fred| )
+                        ( |ginny| )
+                        ( |harriet| )
+                        ( |ileana| )
+                        ( |joseph| )
+                        ( |kincaid| )
+                        ( |larry| ) ).
+  endmethod.
+
+  method PLANTS.
+    constants PLANTS_PER_STUDENT type I value 2.
+
+    split CONDENSE( DIAGRAM ) at `\n` into table data(GARDEN_ROWS).
+
+    data(STUDENT_ID) = ( LINE_INDEX( STUDENTS[ TABLE_LINE = TO_LOWER( STUDENT ) ] ) - 1 ).
+
+    loop at GARDEN_ROWS into data(ROW).
+      do PLANTS_PER_STUDENT times.
+        insert GET_PLANT( GARDEN_ROW   = ROW
+                          PLANT_NUMBER = ( ( STUDENT_ID * PLANTS_PER_STUDENT ) + ( SY-INDEX - 1 ) ) )
+               into table RESULTS.
+      enddo.
+    endloop.
+  endmethod.
+
+  method GET_PLANT.
+    RESULT = switch #(
+                GARDEN_ROW+PLANT_NUMBER(1)
+                when 'G' then 'grass'
+                when 'C' then 'clover'
+                when 'R' then 'radishes'
+                when 'V' then 'violets' ).
+  endmethod.
+endclass.
