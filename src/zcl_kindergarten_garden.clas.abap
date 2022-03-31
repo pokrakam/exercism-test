@@ -14,15 +14,8 @@ class ZCL_KINDERGARTEN_GARDEN definition
 
   private section.
     data STUDENTS type STRING_TABLE.
-    methods GET_PLANT
-      importing
-        GARDEN_ROW    type STRING
-        PLANT_NUMBER  type I
-      returning
-        value(RESULT) type STRING.
 
 endclass.
-
 
 class ZCL_KINDERGARTEN_GARDEN implementation.
   method CONSTRUCTOR.
@@ -41,27 +34,19 @@ class ZCL_KINDERGARTEN_GARDEN implementation.
   endmethod.
 
   method PLANTS.
-    constants PLANTS_PER_STUDENT type I value 2.
-
     split CONDENSE( DIAGRAM ) at `\n` into table data(GARDEN_ROWS).
 
-    data(STUDENT_ID) = ( LINE_INDEX( STUDENTS[ TABLE_LINE = TO_LOWER( STUDENT ) ] ) - 1 ).
+    data(STUDENT_ID) = LINE_INDEX( STUDENTS[ TABLE_LINE = TO_LOWER( STUDENT ) ] ) - 1.
 
-    loop at GARDEN_ROWS into data(ROW).
-      do PLANTS_PER_STUDENT times.
-        insert GET_PLANT( GARDEN_ROW   = ROW
-                          PLANT_NUMBER = ( ( STUDENT_ID * PLANTS_PER_STUDENT ) + ( SY-INDEX - 1 ) ) )
-               into table RESULTS.
-      enddo.
-    endloop.
+    RESULTS = value #(
+                for ROW in GARDEN_ROWS
+                for SEED = 0 while SEED <= 1
+                let OFFSET = ( STUDENT_ID * 2 ) + SEED in
+                ( switch #( ROW+OFFSET(1)
+                    when 'G' then 'grass'
+                    when 'C' then 'clover'
+                    when 'R' then 'radishes'
+                    when 'V' then 'violets' ) ) ).
   endmethod.
 
-  method GET_PLANT.
-    RESULT = switch #(
-                GARDEN_ROW+PLANT_NUMBER(1)
-                when 'G' then 'grass'
-                when 'C' then 'clover'
-                when 'R' then 'radishes'
-                when 'V' then 'violets' ).
-  endmethod.
 endclass.
